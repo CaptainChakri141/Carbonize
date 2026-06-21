@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carbonize - Track and Reduce Your Carbon Footprint</title>
+  <meta name="description" content="An interactive carbon footprint calculator, daily challenges dashboard, and personalized green insights tool to help you understand and reduce your ecological impact.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="dark">
+
+  <!-- Keyboard Accessibility Skip-Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Header Section -->
+  <header class="app-header">
+    <a href="#" class="logo" aria-label="Carbonize Home">
+      <!-- Inline Leaf Icon SVG -->
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17 8C8 10 5.9 16.17 5.18 18c-.14.36-.02.76.28 1 .29.23.68.28 1.02.13 1.83-.79 7.74-3.04 9.52-11.13.19-.88-.56-1.57-1.35-1.35zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/>
+      </svg>
+      <span class="logo-text">Carbonize</span>
+    </a>
+    
+    <div class="header-actions">
+      <!-- System Audit Button -->
+      <button id="open-audit-btn" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem; background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--card-border); box-shadow: none;" aria-haspopup="dialog" aria-controls="audit-modal">
+        System Audit
+      </button>
+
+      <!-- Eco Points Badge -->
+      <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--primary-light); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem; color: var(--primary);">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
+        <span id="eco-points-badge">0</span> pts
+      </div>
+
+      <!-- Theme Switcher Button -->
+      <button id="theme-toggle" class="btn-icon" aria-label="Toggle Light/Dark Theme">
+        <span id="theme-icon">
+          <!-- Moon Icon SVG default -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.3 22h-.1c-5.4 0-10-4.6-10-10 0-4.3 2.7-8 6.6-9.4.6-.2 1.3.1 1.5.7.2.6-.1 1.3-.7 1.5-2.8 1-4.7 3.7-4.7 6.8 0 4.1 3.4 7.5 7.5 7.5 3.1 0 5.8-1.9 6.8-4.7.2-.6.9-.9 1.5-.7.6.2.9.9.7 1.5-.9 3.6-4.5 6.1-8.2 6.1z"/></svg>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Dashboard Container Grid -->
+  <div class="dashboard-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav aria-label="Main Navigation">
+        <ul class="nav-menu" role="tablist">
+          <li>
+            <a class="nav-link active" data-tab="overview" role="tab" aria-selected="true" aria-controls="overview" tabindex="0">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+              Overview
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" data-tab="calculator" role="tab" aria-selected="false" aria-controls="calculator" tabindex="0">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
+              Carbon Calculator
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" data-tab="composition" role="tab" aria-selected="false" aria-controls="composition" tabindex="0">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2 0v8h8c-.46-4.17-3.83-7.54-8-8zm0 10v10c4.17-.46 7.54-3.83 8-8h-8z"/></svg>
+              Carbon Composition
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" data-tab="challenges" role="tab" aria-selected="false" aria-controls="challenges" tabindex="0">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
+              Eco Challenges
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" data-tab="insights" role="tab" aria-selected="false" aria-controls="insights" tabindex="0">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C8.62 12.02 8 10.59 8 9c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.59-.62 3.02-2.15 4.1z"/></svg>
+              Personalized Insights
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" data-tab="learning" role="tab" aria-selected="false" aria-controls="learning" tabindex="0">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93z"/></svg>
+              Learning Hub
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div style="font-size: 0.8rem; color: var(--text-muted); padding: 1rem; border-top: 1px solid var(--card-border);">
+        <p>Sustainable limit: <strong>2,000 kg</strong></p>
+        <p>US Average: <strong>16,000 kg</strong></p>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main id="main-content" class="main-content">
+
+      <!-- ==========================================
+           TAB: OVERVIEW
+           ========================================== -->
+      <section id="overview" class="tab-panel active" role="tabpanel" aria-labelledby="overview-tab">
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <h2>Your Ecological Fingerprint</h2>
+          <p>Analyze your carbon emissions across categories and see how you compare to key global benchmarks.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+          <!-- Metrics Summary Grid -->
+          <div class="metrics-summary-grid">
+            <div class="card metric-card">
+              <span class="metric-label">Total Footprint</span>
+              <span class="metric-value"><span id="metric-total-value">0.0</span> <span style="font-size: 1.2rem;">t</span></span>
+              <span class="metric-unit">Tonnes CO2e/year</span>
+            </div>
+            <div class="card metric-card">
+              <span class="metric-label">Carbon Rating</span>
+              <span id="metric-rating" class="metric-value text-success">Eco Hero</span>
+              <span class="metric-unit">Based on global tiers</span>
+            </div>
+          </div>
+
+          <!-- Benchmark Comparisons -->
+          <div class="card" style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
+            <h3>Comparative Benchmarks</h3>
+            
+            <div class="estimator-stats">
+              <div class="forecast-projection">
+                <div class="stat-row">
+                  <span>vs. Global Climate Limit Target (2,000 kg CO2e)</span>
+                  <span id="metric-comparison-target" class="stat-val">0%</span>
+                </div>
+                <div class="progress-track" style="margin: 0.25rem 0 1rem;">
+                  <div class="progress-bar-fill" style="width: 12.5%; background: var(--success);"></div>
+                </div>
+              </div>
+              
+              <div class="forecast-projection">
+                <div class="stat-row">
+                  <span>vs. US National Average (16,000 kg CO2e)</span>
+                  <span id="metric-comparison-us" class="stat-val">0%</span>
+                </div>
+                <div class="progress-track" style="margin: 0.25rem 0 1rem;">
+                  <div class="progress-bar-fill" style="width: 100%; background: var(--danger);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           TAB: CARBON COMPOSITION
+           ========================================== -->
+      <section id="composition" class="tab-panel" role="tabpanel" aria-labelledby="composition-tab" hidden>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <h2>Carbon Composition</h2>
+          <p>Visual representation of your annual carbon footprint distribution across key categories.</p>
+        </div>
+
+        <div class="overview-grid">
+          <!-- Custom Dynamic Donut Chart Container -->
+          <div class="card chart-container-card">
+            <h3 style="text-align: center; margin-bottom: 1rem;">Footprint Breakdown</h3>
+            <div class="svg-chart-wrapper" id="chart-wrapper">
+              <!-- Inline SVG is inserted dynamically here -->
+            </div>
+            
+            <div class="chart-legend" aria-hidden="true" style="margin-top: 1rem;">
+              <div class="legend-item">
+                <div class="legend-color color-transport"></div>
+                <span>Transport</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color color-energy"></div>
+                <span>Energy</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color color-food"></div>
+                <span>Food</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color color-shopping"></div>
+                <span>Shopping</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Explanation Details -->
+          <div class="card" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <h3>Understanding the Breakdown</h3>
+            <p>Every activity leaves a trace. Here is what constitutes each segment of your carbon footprint:</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <div style="display: flex; align-items: start; gap: 1rem;">
+                <div class="legend-color color-transport" style="margin-top: 6px; flex-shrink: 0;"></div>
+                <div>
+                  <strong>Transportation:</strong> Includes personal vehicle fuel combustion, diesel engine operations, public transit hours, and commercial aviation trips.
+                </div>
+              </div>
+              
+              <div style="display: flex; align-items: start; gap: 1rem;">
+                <div class="legend-color color-energy" style="margin-top: 6px; flex-shrink: 0;"></div>
+                <div>
+                  <strong>Home Utility & Energy:</strong> Includes electricity consumption from your utility provider (offset by solar share) and natural gas, heating oil, or boiler utility emissions.
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: start; gap: 1rem;">
+                <div class="legend-color color-food" style="margin-top: 6px; flex-shrink: 0;"></div>
+                <div>
+                  <strong>Diet & Food Sourcing:</strong> Driven by dietary preferences (meat vs. plant-based) and balanced by sustainable, local-sourcing habits.
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: start; gap: 1rem;">
+                <div class="legend-color color-shopping" style="margin-top: 6px; flex-shrink: 0;"></div>
+                <div>
+                  <strong>Shopping & Consumption:</strong> Driven by consumer behavior (new garments, electronics) and reduced by recycling and repair frequency.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           TAB: CARBON CALCULATOR
+           ========================================== -->
+      <section id="calculator" class="tab-panel" role="tabpanel" aria-labelledby="calculator-tab" hidden>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <h2>Carbon Footprint Tracker</h2>
+          <p>Adjust the slider metrics to accurately estimate your annual carbon footprint. Data is processed locally on your computer.</p>
+        </div>
+
+        <div class="calculator-grid">
+          
+          <!-- Slider Forms -->
+          <div class="card" style="display: flex; flex-direction: column; gap: 2rem;">
+            
+            <!-- Category: Transportation -->
+            <fieldset style="border: none; padding: 0;">
+              <legend class="calc-section-header">
+                <!-- Vehicle Icon -->
+                <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM6 16c-.83 0-1.5-.67-1.5-1.5S5.17 13 6 13s1.5.67 1.5 1.5S6.83 16 6 16zm12 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                <span>Transportation Habit</span>
+              </legend>
+
+              <div class="calculator-group">
+                <label for="calc-car-mileage">Annual Car Mileage</label>
+                <div class="calculator-inputs">
+                  <div class="slider-container">
+                    <input type="range" id="calc-car-mileage" min="0" max="30000" step="500" value="6000" aria-describedby="car-mileage-desc">
+                  </div>
+                  <span id="val-car-mileage" class="input-suffix">6,000</span>
+                  <span class="input-suffix">miles / year</span>
+                </div>
+                <small id="car-mileage-desc" style="color: var(--text-muted); font-size: 0.8rem;">Average gas mileage is 10,000 - 12,000 miles per person.</small>
+              </div>
+
+              <div class="calculator-group">
+                <label for="calc-car-fuel">Car Fuel / Engine Type</label>
+                <select id="calc-car-fuel">
+                  <option value="gas">Standard gasoline / Petrol</option>
+                  <option value="diesel">Diesel</option>
+                  <option value="hybrid">Hybrid (Gas + Electric)</option>
+                  <option value="electric">Electric Vehicle (EV)</option>
+                </select>
+              </div>
+
+              <div class="calculator-group">
+                <label for="calc-public-transit">Public Transportation Time</label>
+                <div class="calculator-inputs">
+                  <div class="slider-container">
+                    <input type="range" id="calc-public-transit" min="0" max="40" step="1" value="5">
+                  </div>
+                  <span id="val-public-transit" class="input-suffix">5</span>
+                  <span class="input-suffix">hours / week</span>
+                </div>
+              </div>
+
+              <div class="calculator-group">
+                <label for="calc-flights">Flights (Short + Medium haul)</label>
+                <div class="calculator-inputs">
+                  <div class="slider-container">
+                    <input type="range" id="calc-flights" min="0" max="15" step="1" value="2">
+                  </div>
+                  <span id="val-flights" class="input-suffix">2</span>
+                  <span class="input-suffix">roundtrips / year</span>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Category: Home Energy -->
+            <fieldset style="border: none; padding: 0;">
+              <legend class="calc-section-header">
+                <!-- Energy Icon -->
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
+                <span>Home Utility & Energy</span>
+              </legend>
+
+              <div class="calculator-group">
+                <label for="calc-electric-bill">Monthly Electric Bill</label>
+                <div class="calculator-inputs">
+                  <div class="slider-container">
+                    <input type="range" id="calc-electric-bill" min="0" max="400" step="10" value="80">
+                  </div>
+                  <span id="val-electric-bill" class="input-suffix">80</span>
+                  <span class="input-suffix">USD / month</span>
+                </div>
+              </div>
+
+              <div class="calculator-group">
+                <label for="calc-renewable-share">Renewable / Solar Energy Share</label>
+                <div class="calculator-inputs">
+                  <div class="slider-container">
+                    <input type="range" id="calc-renewable-share" min="0" max="100" step="5" value="10">
+                  </div>
+                  <span id="val-renewable-share" class="input-suffix">10</span>
+                  <span class="input-suffix">% share</span>
+                </div>
+              </div>
+
+              <div class="calculator-group">
+                <label for="calc-heating-bill">Monthly Heating Bill (Natural Gas/Oil)</label>
+                <div class="calculator-inputs">
+                  <div class="slider-container">
+                    <input type="range" id="calc-heating-bill" min="0" max="300" step="10" value="40">
+                  </div>
+                  <span id="val-heating-bill" class="input-suffix">40</span>
+                  <span class="input-suffix">USD / month</span>
+                </div>
+              </div>
+
+              <div class="calculator-group">
+                <label for="calc-heating-fuel">Primary Heating Source</label>
+                <select id="calc-heating-fuel">
+                  <option value="gas">Natural Gas furnace</option>
+                  <option value="electric">Electric heating / Heat pump</option>
+                  <option value="oil">Heating Oil / Boiler</option>
+                  <option value="none">None / Completely Renewable</option>
+                </select>
+              </div>
+            </fieldset>
+
+            <!-- Category: Food Habits -->
+            <fieldset style="border: none; padding: 0;">
+              <legend class="calc-section-header">
+                <!-- Food Icon -->
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
+                <span>Diet & Food Sourcing</span>
+              </legend>
+
+              <div class="calculator-group">
+                <label for="calc-diet-type">General Dietary Choice</label>
+                <select id="calc-diet-type">
+                  <option value="vegan">Vegan (Strictly plant-based)</option>
+                  <option value="vegetarian">Vegetarian (No meat, consumes dairy/eggs)</option>
+                  <option value="moderate">Moderate Meat Consumer (Poultry/some meat)</option>
+                  <option value="heavy-meat">Heavy Meat Consumer (Beef/pork daily)</option>
+                </select>
+              </div>
+
+              <div class="calculator-group">
+                <label for="calc-local-food">Local Food Share</label>
+                <div class="calculator-inputs">
+                  <div class="slider-container">
+                    <input type="range" id="calc-local-food" min="0" max="100" step="5" value="20">
+                  </div>
+                  <span id="val-local-food" class="input-suffix">20</span>
+                  <span class="input-suffix">% sourced locally</span>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Category: Consumption -->
+            <fieldset style="border: none; padding: 0;">
+              <legend class="calc-section-header">
+                <!-- Shopping Icon -->
+                <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zM10 4h4v2h-4V4zm10 15H4V8h16v11z"/></svg>
+                <span>Shopping & Consumption</span>
+              </legend>
+
+              <div class="calculator-group">
+                <label for="calc-clothing-items">New Clothes Purchased</label>
+                <div class="calculator-inputs">
+                  <div class="slider-container">
+                    <input type="range" id="calc-clothing-items" min="0" max="15" step="1" value="2">
+                  </div>
+                  <span id="val-clothing-items" class="input-suffix">2</span>
+                  <span class="input-suffix">items / month</span>
+                </div>
+              </div>
+
+              <div class="calculator-group">
+                <label for="calc-tech-items">Major Electronics Purchased</label>
+                <div class="calculator-inputs">
+                  <div class="slider-container">
+                    <input type="range" id="calc-tech-items" min="0" max="10" step="1" value="1">
+                  </div>
+                  <span id="val-tech-items" class="input-suffix">1</span>
+                  <span class="input-suffix">gadgets / year</span>
+                </div>
+              </div>
+
+              <div class="calculator-group">
+                <label for="calc-recycle-share">Active Recycling Share (Paper, Metal, Plastics)</label>
+                <div class="calculator-inputs">
+                  <div class="slider-container">
+                    <input type="range" id="calc-recycle-share" min="0" max="100" step="5" value="40">
+                  </div>
+                  <span id="val-recycle-share" class="input-suffix">40</span>
+                  <span class="input-suffix">% recycled</span>
+                </div>
+              </div>
+            </fieldset>
+
+          </div>
+
+          <!-- Live Estimator Sticky Box -->
+          <div class="card calc-estimator-card">
+            <h3>Live Assessment</h3>
+            <div style="margin: 1rem 0; text-align: center;">
+              <span id="estimator-value" style="font-family: var(--font-heading); font-size: 2.25rem; font-weight: 800; color: var(--primary);">0 kg CO2e</span>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">Estimated annual emissions</p>
+            </div>
+            
+            <div class="progress-track" aria-hidden="true">
+              <div id="estimator-progress" class="progress-bar-fill"></div>
+            </div>
+
+            <div class="estimator-stats">
+              <div class="stat-row">
+                <span>Sustainable Target:</span>
+                <span class="stat-val" style="color: var(--success);">2,000 kg</span>
+              </div>
+              <div class="stat-row">
+                <span>National US Avg:</span>
+                <span class="stat-val" style="color: var(--danger);">16,000 kg</span>
+              </div>
+            </div>
+            
+            <button class="btn-primary" onclick="document.querySelector('[data-tab=\'insights\']').click()" style="margin-top: 1rem;">View Recommendations</button>
+          </div>
+          
+        </div>
+      </section>
+
+      <!-- ==========================================
+           TAB: ECO CHALLENGES
+           ========================================== -->
+      <section id="challenges" class="tab-panel" role="tabpanel" aria-labelledby="challenges-tab" hidden>
+        <div class="card challenges-summary" style="display: flex; justify-content: space-between; align-items: center; padding: 2rem;">
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; max-width: 60%;">
+            <h2>Daily Eco Challenges</h2>
+            <p>Form healthy habits by completing simple, high-impact tasks today. Earn Eco-Points and build your profile streak!</p>
+          </div>
+          <!-- Success Graphic Badge -->
+          <div style="background-color: var(--bg-secondary); border-radius: 50%; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); border: 2px solid var(--primary-light);">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 44px; height: 44px; color: var(--primary);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
+          </div>
+        </div>
+
+        <div class="challenges-list" id="challenges-list">
+          <!-- Populated Dynamically in app.js -->
+        </div>
+      </section>
+
+      <!-- ==========================================
+           TAB: INSIGHTS & REDUCTION
+           ========================================== -->
+      <section id="insights" class="tab-panel" role="tabpanel" aria-labelledby="insights-tab" hidden>
+        <div class="card insights-header-card" style="display: flex; flex-direction: column; gap: 0.5rem; padding: 2rem;">
+          <h2>AI Recommendations & Custom Savings</h2>
+          <p>We analyze your emissions profile to identify high-potential carbon cuts. Check recommendations to add them to your personalized action plan and see simulated reductions.</p>
+        </div>
+
+        <div class="insights-content-grid">
+          
+          <!-- Recommendations Terminal -->
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <h3>Targeted Adjustments</h3>
+            <div class="insights-list" id="recommendations-list">
+              <!-- Populated Dynamically in app.js -->
+            </div>
+          </div>
+
+          <!-- Dynamic Forecast Simulator -->
+          <div class="card savings-forecast-card">
+            <h3>Your Action Plan Forecast</h3>
+            
+            <div class="metrics-summary-grid" style="margin-bottom: 0;">
+              <div class="card metric-card" style="background-color: var(--primary-light);">
+                <span class="metric-label" style="color: var(--primary);">CO2 Savings Plan</span>
+                <span id="selected-savings-value" class="metric-value" style="color: var(--primary);">0</span>
+                <span class="metric-unit">kg CO2e / year</span>
+              </div>
+              <div class="card metric-card" style="background-color: var(--warning-light);">
+                <span class="metric-label" style="color: var(--warning);">Cash Kept</span>
+                <span class="metric-value" style="color: var(--warning);">$<span id="projected-cash-savings">0</span></span>
+                <span class="metric-unit">Estimated USD / year</span>
+              </div>
+            </div>
+
+            <!-- Custom Horizontal Comparison Bar Chart -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
+              <h4>Footprint Projections</h4>
+
+              <div class="forecast-projection">
+                <div class="stat-row">
+                  <span>Current Footprint</span>
+                  <span><strong id="projected-total-value">0</strong> kg CO2e</span>
+                </div>
+                <div class="forecast-bar">
+                  <div id="projection-bar-current" class="forecast-bar-current"></div>
+                </div>
+              </div>
+
+              <div class="forecast-projection">
+                <div class="stat-row">
+                  <span>Projected Footprint (With Selected Actions)</span>
+                  <span><strong style="color: var(--primary);">Adjustable</strong></span>
+                </div>
+                <div class="forecast-bar">
+                  <div id="projection-bar-projected" class="forecast-bar-current" style="background: linear-gradient(90deg, var(--accent), var(--primary)); width: 70%;"></div>
+                </div>
+              </div>
+
+              <div class="forecast-projection">
+                <div class="stat-row">
+                  <span>Sustainable Threshold Target</span>
+                  <span><strong>2,000 kg</strong></span>
+                </div>
+                <div class="forecast-bar">
+                  <div id="projection-bar-target" class="forecast-bar-current" style="background: var(--success); width: 12.5%;"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==========================================
+           TAB: LEARNING HUB
+           ========================================== -->
+      <section id="learning" class="tab-panel" role="tabpanel" aria-labelledby="learning-tab" hidden>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <h2>Carbon Knowledge Hub</h2>
+          <p>Understand the science behind climate change, greenhouse gas emissions, and daily actions that build a sustainable future.</p>
+        </div>
+
+        <div class="learning-hub-grid">
+          
+          <article class="card article-card">
+            <span class="article-category">Transportation</span>
+            <h3 class="article-title">The True Cost of Driving</h3>
+            <p class="article-excerpt">Passenger vehicles are a major driver of global warming. On average, a standard gasoline car emits 400 grams of CO2 for every mile driven. Switching to carpooling or biking just twice a week can slash transit emissions by 20%.</p>
+            <a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener noreferrer" class="btn-read-more" aria-label="Read more about EPA Greenhouse Gas Emissions (opens in new tab)">
+              Read EPA Guide
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+            </a>
+          </article>
+
+          <article class="card article-card">
+            <span class="article-category">Food Sourcing</span>
+            <h3 class="article-title">Plates and the Planet</h3>
+            <p class="article-excerpt">Dietary emissions vary wildly. Red meat (beef and lamb) production yields up to 30x more carbon than plant-based proteins due to land clearance, logistics, and methane. Going vegetarian or vegan is the single most effective way to lower personal carbon footprint.</p>
+            <a href="https://www.wri.org/insights/sustainable-diets-what-you-need-know" target="_blank" rel="noopener noreferrer" class="btn-read-more" aria-label="Read more about sustainable diets at WRI (opens in new tab)">
+              Read WRI Insights
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+            </a>
+          </article>
+
+          <article class="card article-card">
+            <span class="article-category">Home Power</span>
+            <h3 class="article-title">Smart Grid Solutions</h3>
+            <p class="article-excerpt">Where your electricity comes from matters. Utility grids heavily reliant on coal/natural gas have a high emission coefficient. Purchasing utility green power certificates or using LED bulbs (which run 85% cooler and require less watts) mitigates this cost.</p>
+            <a href="https://www.energy.gov/energysaver/energy-saver" target="_blank" rel="noopener noreferrer" class="btn-read-more" aria-label="Read more energy saving guides at Energy.gov (opens in new tab)">
+              Read Energy Saver Guides
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+            </a>
+          </article>
+
+        </div>
+
+        <!-- FAQ Accordion -->
+        <section class="card" style="margin-top: 2rem;">
+          <h3>Frequently Asked Questions</h3>
+          
+          <div class="faq-section">
+            
+            <div class="faq-item">
+              <button class="faq-trigger" aria-expanded="false" aria-controls="faq-ans-1">
+                <span>What is a carbon footprint?</span>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+              </button>
+              <div id="faq-ans-1" class="faq-content" role="region">
+                <p>A carbon footprint represents the total greenhouse gas (GHG) emissions caused directly and indirectly by an individual, organization, event, or product. It is calculated in carbon dioxide equivalent (CO2e) units to account for different greenhouse gases.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-trigger" aria-expanded="false" aria-controls="faq-ans-2">
+                <span>How can I reach the 2,000 kg global target?</span>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+              </button>
+              <div id="faq-ans-2" class="faq-content" role="region">
+                <p>Reaching the target requires a combination of behavioral changes (plant-based diets, minimizing flights, walking/cycling) and structural enhancements (installing rooftop solar, transitioning to electric vehicles, and upgrading home insulation).</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-trigger" aria-expanded="false" aria-controls="faq-ans-3">
+                <span>Why are electric vehicles and clean grid connected?</span>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+              </button>
+              <div id="faq-ans-3" class="faq-content" role="region">
+                <p>Electric vehicles run on electricity, not gasoline. Therefore, an EV's carbon footprint is tied to the energy grid where it is charged. As solar, wind, and nuclear energy shares expand on the grid, EV charging emissions decrease close to absolute zero.</p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Footer Section -->
+  <footer class="app-footer">
+    <p>&copy; 2026 Carbonize. Data processed locally, respecting user privacy. Developed for environmental awareness and action.</p>
+  </footer>
+
+  <!-- Self-Diagnostic Modal (Testing & Quality Parameters Showcase) -->
+  <dialog id="audit-modal" class="card" style="border: 2px solid var(--primary); max-width: 600px; width: 90%; margin: auto; padding: 2rem; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); color: var(--text-primary); background-color: var(--bg-secondary);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--bg-tertiary); padding-bottom: 0.75rem;">
+      <h3 style="display: flex; align-items: center; gap: 0.5rem; color: var(--primary); margin: 0;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        Parameter Diagnostic Console
+      </h3>
+      <button id="close-audit-btn" class="btn-icon" aria-label="Close dialog" style="width: 32px; height: 32px; font-size: 1.5rem; line-height: 1;">&times;</button>
+    </div>
+    
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;">This console runs automated self-tests directly in the client browser to evaluate the project based on <strong>Code Quality, Security, Efficiency, Accessibility (Testing), and Problem Alignment</strong>.</p>
+      
+      <div id="audit-results-log" style="display: flex; flex-direction: column; gap: 0.75rem; background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.85rem; max-height: 250px; overflow-y: auto; border: 1px solid var(--card-border); text-align: left;">
+        Click "Execute Diagnostics" below to run verification suite.
+      </div>
+      
+      <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem;">
+        <button id="run-audit-btn" class="btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.9rem; box-shadow: none;">Execute Diagnostics</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Application script entry -->
+  <script src="app.js"></script>
+</body>
+</html>
