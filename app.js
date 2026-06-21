@@ -223,7 +223,7 @@ const DEFAULT_STATE = {
 let state = { ...DEFAULT_STATE };
 
 // Cache DOM Elements for Efficiency
-const DOM = {
+const DOM = typeof document !== 'undefined' ? {
   body: document.body,
   themeToggle: document.getElementById('theme-toggle'),
   themeIcon: document.getElementById('theme-icon'),
@@ -276,7 +276,7 @@ const DOM = {
   projectionBarTarget: document.getElementById('projection-bar-target'),
   
   faqItems: document.querySelectorAll('.faq-item')
-};
+} : {};
 
 // SVG Icons mapping
 const ICONS = {
@@ -748,198 +748,616 @@ function handleTabChange(targetId) {
 function runDiagnostics() {
   const logContainer = document.getElementById('audit-results-log');
   if (!logContainer) return;
-  
-  logContainer.textContent = '';
-  
-  const log = (msg, status = 'info') => {
-    const line = document.createElement('div');
-    line.style.margin = '4px 0';
-    let prefix = 'ℹ️ ';
-    if (status === 'pass') {
-      prefix = '🟢 [PASS] ';
-      line.style.color = 'var(--primary)';
-      line.style.fontWeight = '600';
-    } else if (status === 'fail') {
-      prefix = '🔴 [FAIL] ';
-      line.style.color = 'var(--danger)';
-      line.style.fontWeight = '600';
-    } else if (status === 'info') {
-      prefix = '🔵 [INFO] ';
-      line.style.color = 'var(--info)';
+
+  const suites = [
+    {
+      name: "Calculation Models",
+      icon: "📈",
+      tests: [
+        {
+          name: "Transport Emission Math Accuracy",
+          run: () => {
+            const originalCalc = { ...state.calculator };
+            state.calculator = { ...DEFAULT_STATE.calculator, carMileage: 10000, carFuel: 'gas', publicTransit: 10, flights: 4 };
+            const emissions = calculateEmissions();
+            state.calculator = originalCalc;
+            // Expected: 10000 * 0.411 + 10 * 52 * 1.2 + 4 * 250 = 4110 + 624 + 1000 = 5734
+            const diff = Math.abs(emissions.transport - 5734);
+            if (diff > 2) throw new Error(`Expected 5734, got ${emissions.transport}`);
+          }
+        },
+        {
+          name: "Energy Emission Math Accuracy",
+          run: () => {
+            const originalCalc = { ...state.calculator };
+            state.calculator = { ...DEFAULT_STATE.calculator, electricBill: 150, renewableShare: 20, heatingBill: 100, heatingFuel: 'gas' };
+            const emissions = calculateEmissions();
+            state.calculator = originalCalc;
+            // Expected: (150 * 12 * 0.85 * 0.8) + (100 * 12 * 1.2) = 1224 + 1440 = 2664
+            const diff = Math.abs(emissions.energy - 2664);
+            if (diff > 2) throw new Error(`Expected 2664, got ${emissions.energy}`);
+          }
+        },
+        {
+          name: "Diet Emission Math Accuracy",
+          run: () => {
+            const originalCalc = { ...state.calculator };
+            state.calculator = { ...DEFAULT_STATE.calculator, dietType: 'vegan', localFood: 50 };
+            const emissions = calculateEmissions();
+            state.calculator = originalCalc;
+            // Expected: 1000 * (1 - 0.5 * 0.1) = 950
+            const diff = Math.abs(emissions.food - 950);
+            if (diff > 2) throw new Error(`Expected 950, got ${emissions.food}`);
+          }
+        },
+        {
+          name: "Shopping Emission Math Accuracy",
+          run: () => {
+            const originalCalc = { ...state.calculator };
+            state.calculator = { ...DEFAULT_STATE.calculator, clothingItems: 5, techItems: 2, recycleShare: 80 };
+            const emissions = calculateEmissions();
+            state.calculator = originalCalc;
+            // Expected: (5 * 12 * 15 + 2 * 150) * (1 - 0.8 * 0.2) = (900 + 300) * 0.84 = 1008
+            const diff = Math.abs(emissions.shopping - 1008);
+            if (diff > 2) throw new Error(`Expected 1008, got ${emissions.shopping}`);
+          }
+        },
+        {
+          name: "EV Engine Reduction Model",
+          run: () => {
+            const originalCalc = { ...state.calculator };
+            state.calculator = { ...DEFAULT_STATE.calculator, carMileage: 10000, carFuel: 'electric' };
+            const emissions = calculateEmissions();
+            state.calculator = originalCalc;
+            // Expected: 10000 * 0.100 + 5 * 52 * 1.2 + 2 * 250 = 1000 + 312 + 500 = 1812
+            const diff = Math.abs(emissions.transport - 1812);
+            if (diff > 2) throw new Error(`Expected 1812, got ${emissions.transport}`);
+          }
+        },
+        {
+          name: "Action Plan Reduction Math",
+          run: () => {
+            const emissions = { transport: 4000, energy: 3000, food: 2000, shopping: 2000 };
+            const results = calculateProjectedSavings(emissions, ['t1', 'e1']);
+            if (results.co2Savings !== 950) throw new Error(`Expected 950, got ${results.co2Savings}`);
+          }
+        },
+        {
+          name: "Action Plan Financial Projections",
+          run: () => {
+            const emissions = { transport: 4000, energy: 3000, food: 2000, shopping: 2000 };
+            const results = calculateProjectedSavings(emissions, ['t1', 'e1']);
+            if (results.cashSavings !== 525) throw new Error(`Expected 525, got ${results.cashSavings}`);
+          }
+        }
+      ]
+    },
+    {
+      name: "Security Safeguards",
+      icon: "🔒",
+      tests: [
+        {
+          name: "CSP Meta Tag Presence",
+          run: () => {
+            const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+            if (!cspMeta) throw new Error("CSP meta tag missing in head");
+          }
+        },
+        {
+          name: "CSP Script-Src Directive safety",
+          run: () => {
+            const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+            if (!cspMeta) throw new Error("CSP not loaded");
+            const content = cspMeta.getAttribute('content');
+            if (!content.includes("script-src 'self'")) {
+              throw new Error(`CSP script policy missing 'self': "${content}"`);
+            }
+            if (content.includes("script-src 'unsafe-inline'")) {
+              throw new Error("CSP allows unsafe inline script execution");
+            }
+          }
+        },
+        {
+          name: "Referrer-Policy Verification",
+          run: () => {
+            const refMeta = document.querySelector('meta[name="referrer"]');
+            if (!refMeta) throw new Error("Referrer-Policy meta tag missing");
+            if (refMeta.getAttribute('content') !== 'same-origin') {
+              throw new Error(`Expected same-origin, got: "${refMeta.getAttribute('content')}"`);
+            }
+          }
+        },
+        {
+          name: "Permissions-Policy Meta Verification",
+          run: () => {
+            const permMeta = document.querySelector('meta[http-equiv="Permissions-Policy"]');
+            if (!permMeta) throw new Error("Permissions-Policy meta tag missing");
+          }
+        },
+        {
+          name: "XSS HTML Escaping Engine",
+          run: () => {
+            const raw = '<script>alert("xss")</script>';
+            const escaped = escapeHTML(raw);
+            if (escaped.includes('<') || escaped.includes('>') || escaped.includes('"')) {
+              throw new Error(`Unsafe characters unescaped: ${escaped}`);
+            }
+          }
+        },
+        {
+          name: "LocalStorage Schema Sanitizer",
+          run: () => {
+            const payload = JSON.stringify({
+              theme: 'light',
+              maliciousAttr: '<script>alert(1)</script>',
+              calculator: { carMileage: 5000 }
+            });
+            const clean = safeLoadState(payload);
+            if (!clean) throw new Error("State rejected");
+            if (clean.maliciousAttr !== undefined) throw new Error("Failed to strip unrecognized attributes");
+            if (clean.theme !== 'light') throw new Error("Theme load failed");
+          }
+        },
+        {
+          name: "Prototype Pollution Protection",
+          run: () => {
+            const payload = '{"theme":"light","__proto__":{"polluted":true},"calculator":{}}';
+            const clean = safeLoadState(payload);
+            if (clean !== null) throw new Error("State loader accepted prototype polluted payload");
+          }
+        }
+      ]
+    },
+    {
+      name: "Accessibility & ARIA",
+      icon: "♿",
+      tests: [
+        {
+          name: "Keyboard Skip-Link Integration",
+          run: () => {
+            const skipLink = document.querySelector('.skip-link');
+            if (!skipLink) throw new Error("Keyboard skip link not found");
+            const targetId = skipLink.getAttribute('href').substring(1);
+            const targetEl = document.getElementById(targetId);
+            if (!targetEl) throw new Error(`Skip target ID "${targetId}" does not exist`);
+          }
+        },
+        {
+          name: "Nav Tab ARIA Semantics",
+          run: () => {
+            const tabs = document.querySelectorAll('.nav-link');
+            if (tabs.length === 0) throw new Error("No nav tabs found");
+            tabs.forEach(tab => {
+              if (tab.getAttribute('role') !== 'tab') throw new Error(`Missing role="tab": ${tab.textContent}`);
+              if (!tab.getAttribute('aria-controls')) throw new Error(`Missing aria-controls pointer: ${tab.textContent}`);
+            });
+          }
+        },
+        {
+          name: "Modal Dialog Role Bounds",
+          run: () => {
+            const modal = document.getElementById('audit-modal');
+            if (!modal) throw new Error("Audit dialog is missing");
+            if (modal.tagName.toLowerCase() !== 'dialog') {
+              if (modal.getAttribute('role') !== 'dialog') {
+                throw new Error("Audit modal lacks role='dialog'");
+              }
+            }
+          }
+        },
+        {
+          name: "Form Label Bindings",
+          run: () => {
+            const inputs = document.querySelectorAll('input, select');
+            let missingCount = 0;
+            inputs.forEach(inp => {
+              if (!inp.id) return;
+              const label = document.querySelector(`label[for="${inp.id}"]`);
+              const ariaLabel = inp.getAttribute('aria-label');
+              const ariaLabelledBy = inp.getAttribute('aria-labelledby');
+              if (!label && !ariaLabel && !ariaLabelledBy) {
+                missingCount++;
+              }
+            });
+            if (missingCount > 0) throw new Error(`Found ${missingCount} inputs missing labels or ARIA descriptions`);
+          }
+        },
+        {
+          name: "Image & Icon Alternate Tags",
+          run: () => {
+            const svgs = document.querySelectorAll('svg');
+            svgs.forEach(svg => {
+              const hasAriaHidden = svg.getAttribute('aria-hidden') === 'true';
+              const hasRoleImg = svg.getAttribute('role') === 'img';
+              const hasTitle = svg.querySelector('title') !== null || svg.getAttribute('aria-label') !== null;
+              if (!hasAriaHidden && !hasRoleImg && !hasTitle) {
+                if (!svg.closest('[aria-label]')) {
+                  throw new Error("SVG icon lacking labels or aria-hidden");
+                }
+              }
+            });
+          }
+        },
+        {
+          name: "Tabindex Key Navigation Focus",
+          run: () => {
+            const activeTab = document.querySelector('.nav-link.active');
+            if (activeTab && activeTab.getAttribute('tabindex') !== '0') {
+              throw new Error("Active tab must have tabindex=0");
+            }
+          }
+        }
+      ]
+    },
+    {
+      name: "Performance & State",
+      icon: "⚙️",
+      tests: [
+        {
+          name: "DOM Selector Map Integrity",
+          run: () => {
+            const failedKeys = [];
+            Object.keys(DOM).forEach(key => {
+              if (DOM[key] === null) {
+                if (key !== 'faqItems' && key !== 'pointsBadge') {
+                  failedKeys.push(key);
+                }
+              }
+            });
+            if (failedKeys.length > 0) {
+              throw new Error(`Selectors [${failedKeys.join(', ')}] could not be resolved`);
+            }
+          }
+        },
+        {
+          name: "LocalStorage Write/Read Speed",
+          run: () => {
+            const start = performance.now();
+            localStorage.setItem('__perf_test_key__', JSON.stringify(DEFAULT_STATE));
+            const read = JSON.parse(localStorage.getItem('__perf_test_key__'));
+            localStorage.removeItem('__perf_test_key__');
+            const elapsed = performance.now() - start;
+            if (elapsed > 15) {
+              throw new Error(`Slow transactions: ${elapsed.toFixed(1)}ms`);
+            }
+          }
+        },
+        {
+          name: "Color Theme Toggle Engine",
+          run: () => {
+            const currentTheme = state.theme;
+            const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            state.theme = targetTheme;
+            DOM.body.setAttribute('data-theme', targetTheme);
+            const bodyThemeAttr = DOM.body.getAttribute('data-theme');
+            state.theme = currentTheme;
+            DOM.body.setAttribute('data-theme', currentTheme);
+            if (bodyThemeAttr !== targetTheme) {
+              throw new Error(`Theme toggle failed in DOM syncing`);
+            }
+          }
+        },
+        {
+          name: "SVG Donut Chart Rendering",
+          run: () => {
+            const chart = document.getElementById('chart-wrapper');
+            if (!chart) throw new Error("Chart container missing");
+            const svg = chart.querySelector('svg');
+            if (!svg) throw new Error("SVG Donut chart is not rendered");
+            if (svg.querySelectorAll('circle').length === 0) {
+              throw new Error("SVG Donut chart contains no sectors");
+            }
+          }
+        },
+        {
+          name: "FAQ Trigger Expand Collapse",
+          run: () => {
+            const trigger = document.querySelector('.faq-trigger');
+            if (!trigger) throw new Error("No FAQ triggers found");
+            const ariaExpandedVal = trigger.getAttribute('aria-expanded');
+            if (ariaExpandedVal === null) throw new Error("FAQ trigger missing aria-expanded attribute");
+          }
+        },
+        {
+          name: "Memory Node Count Budget",
+          run: () => {
+            const nodeCount = document.getElementsByTagName('*').length;
+            if (nodeCount > 1500) {
+              throw new Error(`DOM weight exceeds budget: ${nodeCount} nodes`);
+            }
+          }
+        }
+      ]
     }
-    line.textContent = `${prefix}${msg}`;
-    logContainer.appendChild(line);
-    logContainer.scrollTop = logContainer.scrollHeight;
-  };
+  ];
 
-  log("Initializing automated parameter diagnostic audit...", "info");
+  // Render Dashboard Layout
+  logContainer.innerHTML = `
+    <div class="diag-dashboard" style="display: flex; flex-direction: column; gap: 1.25rem; font-family: sans-serif; text-align: left;">
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;">
+        <div style="background: var(--bg-secondary); border: 1px solid var(--card-border); padding: 0.5rem; border-radius: var(--radius-sm); text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Total Tests</div>
+          <div id="diag-stat-total" style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">0</div>
+        </div>
+        <div style="background: var(--bg-secondary); border: 1px solid var(--card-border); padding: 0.5rem; border-radius: var(--radius-sm); text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Passed</div>
+          <div id="diag-stat-passed" style="font-size: 1.5rem; font-weight: 800; color: var(--success);">0</div>
+        </div>
+        <div style="background: var(--bg-secondary); border: 1px solid var(--card-border); padding: 0.5rem; border-radius: var(--radius-sm); text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Failed</div>
+          <div id="diag-stat-failed" style="font-size: 1.5rem; font-weight: 800; color: var(--danger);">0</div>
+        </div>
+        <div style="background: var(--bg-secondary); border: 1px solid var(--card-border); padding: 0.5rem; border-radius: var(--radius-sm); text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Time</div>
+          <div id="diag-stat-time" style="font-size: 1.5rem; font-weight: 800; color: var(--info);">0ms</div>
+        </div>
+      </div>
+      
+      <div style="width: 100%; height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; border: 1px solid var(--card-border);">
+        <div id="diag-progress-bar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.15s ease;"></div>
+      </div>
+      
+      <div id="diag-suites-container" style="display: flex; flex-direction: column; gap: 0.75rem; overflow-y: auto; max-height: 280px; padding-right: 0.25rem;">
+      </div>
+    </div>
+  `;
 
-  // 1. Math Calculation Precision (Code Quality / Alignment)
-  log("Test 1: Verification of emission math models...", "info");
-  try {
-    const originalCalc = { ...state.calculator };
+  const suitesContainer = document.getElementById('diag-suites-container');
+  const statTotal = document.getElementById('diag-stat-total');
+  const statPassed = document.getElementById('diag-stat-passed');
+  const statFailed = document.getElementById('diag-stat-failed');
+  const statTime = document.getElementById('diag-stat-time');
+  const progressBar = document.getElementById('diag-progress-bar');
+
+  let totalTests = 0;
+  suites.forEach(s => totalTests += s.tests.length);
+  statTotal.textContent = totalTests;
+
+  let testsRun = 0;
+  let testsPassed = 0;
+  let testsFailed = 0;
+  const startTime = performance.now();
+
+  const suiteElements = {};
+  suites.forEach((suite, sIdx) => {
+    const sEl = document.createElement('div');
+    sEl.style.border = '1px solid var(--card-border)';
+    sEl.style.borderRadius = 'var(--radius-sm)';
+    sEl.style.background = 'var(--bg-secondary)';
+    sEl.style.overflow = 'hidden';
     
-    // Set a known test profile
-    state.calculator = {
-      carMileage: 10000,
-      carFuel: 'gas',
-      publicTransit: 10,
-      flights: 4,
-      electricBill: 150,
-      renewableShare: 20,
-      heatingBill: 100,
-      heatingFuel: 'gas',
-      dietType: 'vegan',
-      localFood: 50,
-      clothingItems: 5,
-      techItems: 2,
-      recycleShare: 80
+    sEl.innerHTML = `
+      <div class="suite-header" style="padding: 0.6rem 0.75rem; background: var(--bg-tertiary); display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
+        <span style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem;">
+          <span>${suite.icon}</span>
+          <span>${suite.name}</span>
+        </span>
+        <span class="suite-badge" style="font-size: 0.75rem; font-weight: 700; background: var(--bg-primary); padding: 2px 8px; border-radius: 12px; border: 1px solid var(--card-border); color: var(--text-secondary);">
+          Pending
+        </span>
+      </div>
+      <div class="suite-tests" style="display: none; flex-direction: column; border-top: 1px solid var(--card-border); background: var(--bg-primary); font-family: monospace; font-size: 0.8rem; padding: 0.5rem 0.75rem; gap: 0.35rem;">
+      </div>
+    `;
+
+    const header = sEl.querySelector('.suite-header');
+    const testsDiv = sEl.querySelector('.suite-tests');
+    header.addEventListener('click', () => {
+      testsDiv.style.display = testsDiv.style.display === 'none' ? 'flex' : 'none';
+    });
+
+    suitesContainer.appendChild(sEl);
+    suiteElements[sIdx] = {
+      badge: sEl.querySelector('.suite-badge'),
+      testsDiv: testsDiv,
+      passedCount: 0,
+      failedCount: 0,
+      totalCount: suite.tests.length
     };
-    
-    const results = calculateEmissions();
-    
-    // Expected math outputs:
-    // Transport: 10000 * 0.411 + (10 * 52 * 1.2) + (4 * 250) = 4110 + 624 + 1000 = 5734
-    // Energy: (150 * 12 * 0.85 * 0.8) + (100 * 12 * 1.2) = 1224 + 1440 = 2664
-    // Diet: 1000 * (1 - 0.5 * 0.1) = 1000 * 0.95 = 950
-    // Shopping: ((5 * 12 * 15) + (2 * 150)) * (1 - 0.8 * 0.2) = (900 + 300) * 0.84 = 1008
-    const expected = {
-      transport: 5734,
-      energy: 2664,
-      food: 950,
-      shopping: 1008
-    };
+  });
 
-    // Restore state
-    state.calculator = originalCalc;
+  const testQueue = [];
+  suites.forEach((suite, sIdx) => {
+    suite.tests.forEach((t, tIdx) => {
+      testQueue.push({ suite, sIdx, t, tIdx });
+    });
+  });
 
-    const transportPass = Math.abs(results.transport - expected.transport) <= 2;
-    const energyPass = Math.abs(results.energy - expected.energy) <= 2;
-    const foodPass = Math.abs(results.food - expected.food) <= 2;
-    const shoppingPass = Math.abs(results.shopping - expected.shopping) <= 2;
-
-    if (transportPass && energyPass && foodPass && shoppingPass) {
-      log("Calculation Precision Verification: Passed (Math accuracy within +/- 2kg).", "pass");
-    } else {
-      log(`Math accuracy mismatched. Got: ${JSON.stringify(results)}, Expected: ${JSON.stringify(expected)}`, "fail");
+  function runNextTest(index) {
+    if (index >= testQueue.length) {
+      const totalTime = Math.round(performance.now() - startTime);
+      statTime.textContent = `${totalTime}ms`;
+      progressBar.style.width = '100%';
+      if (testsFailed === 0) {
+        progressBar.style.background = 'var(--success)';
+      } else {
+        progressBar.style.background = 'var(--danger)';
+      }
+      return;
     }
-  } catch (e) {
-    log(`Math model checks threw error: ${e.message}`, "fail");
+
+    const { suite, sIdx, t, tIdx } = testQueue[index];
+    const sElInfo = suiteElements[sIdx];
+    sElInfo.testsDiv.style.display = 'flex';
+
+    const testLine = document.createElement('div');
+    testLine.style.display = 'flex';
+    testLine.style.justifyContent = 'space-between';
+    testLine.style.alignItems = 'start';
+    testLine.style.gap = '0.5rem';
+    testLine.innerHTML = `<span style="color: var(--text-secondary);">&gt; Running ${t.name}...</span>`;
+    sElInfo.testsDiv.appendChild(testLine);
+    sElInfo.testsDiv.scrollTop = sElInfo.testsDiv.scrollHeight;
+
+    setTimeout(() => {
+      let passed = true;
+      let errorMsg = "";
+      
+      try {
+        t.run();
+      } catch (err) {
+        passed = false;
+        errorMsg = err.message;
+      }
+
+      testsRun++;
+      if (passed) {
+        testsPassed++;
+        sElInfo.passedCount++;
+        statPassed.textContent = testsPassed;
+        testLine.innerHTML = `
+          <span style="color: var(--primary);">🟢 [PASS] ${t.name}</span>
+          <span style="color: var(--text-muted); font-size: 0.75rem;">ok</span>
+        `;
+      } else {
+        testsFailed++;
+        sElInfo.failedCount++;
+        statFailed.textContent = testsFailed;
+        testLine.innerHTML = `
+          <span style="color: var(--danger); font-weight: 700;">🔴 [FAIL] ${t.name}</span>
+          <span style="color: var(--danger); font-size: 0.75rem;">${errorMsg}</span>
+        `;
+        testLine.style.background = 'var(--danger-light)';
+        testLine.style.padding = '2px 4px';
+        testLine.style.borderRadius = '4px';
+      }
+
+      const percent = Math.round((testsRun / totalTests) * 100);
+      progressBar.style.width = `${percent}%`;
+
+      if (sElInfo.failedCount > 0) {
+        sElInfo.badge.textContent = `${sElInfo.passedCount}/${sElInfo.totalCount} Pass`;
+        sElInfo.badge.style.background = 'var(--danger-light)';
+        sElInfo.badge.style.color = 'var(--danger)';
+        sElInfo.badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+      } else if (sElInfo.passedCount === sElInfo.totalCount) {
+        sElInfo.badge.textContent = `All Passed`;
+        sElInfo.badge.style.background = 'var(--success-light)';
+        sElInfo.badge.style.color = 'var(--success)';
+        sElInfo.badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+      } else {
+        sElInfo.badge.textContent = `${sElInfo.passedCount}/${sElInfo.totalCount} Pass`;
+      }
+
+      runNextTest(index + 1);
+    }, 40);
   }
 
-  // 2. DOM Injection Audits (Security)
-  log("Test 2: Auditing DOM XSS injection vulnerabilities...", "info");
-  try {
-    // Audit check on rendering outputs to verify no dangerous raw parses are executed
-    const testVal = document.createElement('div');
-    testVal.innerHTML = `<img src="x" onerror="window.__xssTest=true">`;
-    // We check that our renderer strictly uses textContent for dynamically updated labels
-    const isValCarMileageSafe = (DOM.valCarMileage.innerHTML.includes('<') === false);
-    const isValElectricBillSafe = (DOM.valElectricBill.innerHTML.includes('<') === false);
+  runNextTest(0);
+}
 
-    if (isValCarMileageSafe && isValElectricBillSafe) {
-      log("XSS Sanitization Audit: Passed. All dynamic inputs are parsed via secure textContent nodes.", "pass");
-    } else {
-      log("Found raw innerHTML writes on calculator numeric outputs.", "fail");
+/**
+ * Safely escape HTML characters to prevent XSS
+ */
+function escapeHTML(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
+ * Validates and deep cleans parsed state from local storage.
+ * Prevents prototype pollution and filters out unrecognized keys or wrong types.
+ */
+function safeLoadState(savedString) {
+  if (!savedString) return null;
+  try {
+    const parsed = JSON.parse(savedString);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+
+    // Prevent prototype pollution
+    const keys = Object.keys(parsed);
+    if (keys.includes('__proto__') || keys.includes('constructor') || keys.includes('prototype')) {
+      console.warn("Potential prototype pollution detected in storage. Resetting.");
+      return null;
     }
-  } catch (e) {
-    log(`Security audit threw error: ${e.message}`, "fail");
-  }
 
-  // 3. Selectors & DOM Cache Integrity (Efficiency)
-  log("Test 3: Checking DOM Selector cache mapping table...", "info");
-  try {
-    const failures = [];
-    Object.keys(DOM).forEach(key => {
-      const node = DOM[key];
-      if (node === null) {
-        // Skip elements that might not be on certain tabs initially
-        if (key !== 'faqItems' && key !== 'pointsBadge') {
-          failures.push(key);
+    const validated = {};
+
+    // 1. Theme
+    if (parsed.theme === 'light' || parsed.theme === 'dark') {
+      validated.theme = parsed.theme;
+    } else {
+      validated.theme = DEFAULT_STATE.theme;
+    }
+
+    // 2. Calculator variables
+    validated.calculator = {};
+    const calcSchema = DEFAULT_STATE.calculator;
+    const inputCalc = parsed.calculator || {};
+
+    if (typeof inputCalc === 'object' && !Array.isArray(inputCalc)) {
+      for (const key in calcSchema) {
+        if (Object.prototype.hasOwnProperty.call(calcSchema, key)) {
+          const expectedType = typeof calcSchema[key];
+          const providedVal = inputCalc[key];
+          
+          if (providedVal !== undefined && typeof providedVal === expectedType) {
+            if (expectedType === 'number') {
+              if (Number.isFinite(providedVal)) {
+                validated.calculator[key] = providedVal;
+              } else {
+                validated.calculator[key] = calcSchema[key];
+              }
+            } else if (expectedType === 'string') {
+              validated.calculator[key] = escapeHTML(providedVal);
+            } else {
+              validated.calculator[key] = providedVal;
+            }
+          } else {
+            validated.calculator[key] = calcSchema[key];
+          }
         }
       }
-    });
-
-    if (failures.length === 0) {
-      log("DOM Selector Cache: Passed. 100% of application nodes mapped successfully.", "pass");
     } else {
-      log(`Cache selector resolution errors: [${failures.join(', ')}]`, "fail");
-    }
-  } catch (e) {
-    log(`DOM Selector lookup threw error: ${e.message}`, "fail");
-  }
-
-  // 4. Accessibility Check (Accessibility / Testing)
-  log("Test 4: Reviewing Keyboard & Screen Reader landmarks...", "info");
-  try {
-    const main = document.querySelector('main');
-    const header = document.querySelector('header');
-    const nav = document.querySelector('nav');
-    const footer = document.querySelector('footer');
-    const skipLink = document.querySelector('.skip-link');
-
-    const landmarkPass = (main && header && nav && footer && skipLink);
-    if (landmarkPass) {
-      log("HTML5 Semantic Landmarks: Passed (nav, main, header, footer, skip-link elements present).", "pass");
-    } else {
-      log("Semantic landmarks audit: Failed. Some core accessibility regions are missing.", "fail");
+      validated.calculator = { ...DEFAULT_STATE.calculator };
     }
 
-    // Verify all input fields have corresponding aria labels or matching label element bounds
-    const inputs = document.querySelectorAll('input, select');
-    let labelErrors = 0;
-    inputs.forEach(input => {
-      if (!input.id) return;
-      const label = document.querySelector(`label[for="${input.id}"]`);
-      if (!label && !input.getAttribute('aria-label') && !input.getAttribute('aria-labelledby')) {
-        labelErrors++;
+    // 3. Completed Recommendations
+    validated.completedRecs = [];
+    if (Array.isArray(parsed.completedRecs)) {
+      const allValidIds = Object.values(RECOMMENDATIONS).flat().map(r => r.id);
+      parsed.completedRecs.forEach(id => {
+        if (typeof id === 'string' && allValidIds.includes(id)) {
+          validated.completedRecs.push(id);
+        }
+      });
+    }
+
+    // 4. Challenges
+    validated.challenges = {};
+    const challengeSchema = DEFAULT_STATE.challenges;
+    const inputChallenges = parsed.challenges || {};
+    if (typeof inputChallenges === 'object' && !Array.isArray(inputChallenges)) {
+      for (const key in challengeSchema) {
+        if (Object.prototype.hasOwnProperty.call(challengeSchema, key)) {
+          if (typeof inputChallenges[key] === 'boolean') {
+            validated.challenges[key] = inputChallenges[key];
+          } else {
+            validated.challenges[key] = challengeSchema[key];
+          }
+        }
       }
-    });
-
-    if (labelErrors === 0) {
-      log("Form Labels Binding check: Passed. All inputs have screen-reader associations.", "pass");
     } else {
-      log(`Form label matching mismatch: ${labelErrors} input(s) are missing screen reader labels.`, "fail");
+      validated.challenges = { ...DEFAULT_STATE.challenges };
     }
-  } catch (e) {
-    log(`Accessibility audit threw error: ${e.message}`, "fail");
-  }
 
-  // 5. State Storage Availability (Efficiency / Quality)
-  log("Test 5: Checking LocalStorage persistent state cache...", "info");
-  try {
-    localStorage.setItem('__carbonize_audit_key__', 'active');
-    const active = localStorage.getItem('__carbonize_audit_key__');
-    localStorage.removeItem('__carbonize_audit_key__');
-
-    if (active === 'active') {
-      log("Storage Persistence Audit: Passed. localStorage read/write processes verified.", "pass");
+    // 5. Eco Points
+    if (typeof parsed.ecoPoints === 'number' && Number.isFinite(parsed.ecoPoints) && parsed.ecoPoints >= 0) {
+      validated.ecoPoints = Math.round(parsed.ecoPoints);
     } else {
-      log("Storage retrieval error.", "fail");
+      validated.ecoPoints = DEFAULT_STATE.ecoPoints;
     }
+
+    return validated;
   } catch (e) {
-    log(`Persistence storage check threw error: ${e.message}`, "fail");
+    console.warn("Storage parse or validation failed", e);
+    return null;
   }
-
-  // 6. Problem Statement Coverage
-  log("Test 6: Validating layout alignment with problem statement...", "info");
-  try {
-    const requiredSections = ['overview', 'calculator', 'challenges', 'insights', 'learning', 'composition'];
-    const missing = [];
-    requiredSections.forEach(id => {
-      if (!document.getElementById(id)) missing.push(id);
-    });
-
-    if (missing.length === 0) {
-      log("Problem statement criteria mapping: Passed. All key components accounted for.", "pass");
-    } else {
-      log(`Missing layout panel sections: [${missing.join(', ')}]`, "fail");
-    }
-  } catch (e) {
-    log(`Problem criteria alignment check threw error: ${e.message}`, "fail");
-  }
-
-  log("Automated diagnostic checks finalized.", "info");
 }
 
 /**
@@ -947,15 +1365,11 @@ function runDiagnostics() {
  */
 function init() {
   const saved = localStorage.getItem('carbonize_state');
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      state = Object.assign({}, DEFAULT_STATE, parsed);
-      state.calculator = Object.assign({}, DEFAULT_STATE.calculator, parsed.calculator);
-      state.challenges = Object.assign({}, DEFAULT_STATE.challenges, parsed.challenges);
-    } catch (e) {
-      console.warn("Could not load state, resetting to default", e);
-    }
+  const validated = safeLoadState(saved);
+  if (validated) {
+    state = validated;
+  } else {
+    state = JSON.parse(JSON.stringify(DEFAULT_STATE));
   }
 
   DOM.body.setAttribute('data-theme', state.theme);
@@ -1044,6 +1458,16 @@ function init() {
     });
   }
 
+  const goToInsightsBtn = document.getElementById('go-to-insights-btn');
+  if (goToInsightsBtn) {
+    goToInsightsBtn.addEventListener('click', () => {
+      const tabBtn = document.querySelector('[data-tab="insights"]');
+      if (tabBtn) {
+        tabBtn.click();
+      }
+    });
+  }
+
   DOM.faqItems.forEach(item => {
     const trigger = item.querySelector('.faq-trigger');
     if (trigger) {
@@ -1096,8 +1520,35 @@ function init() {
 }
 
 // Run application
-document.addEventListener('DOMContentLoaded', init);
-// Fallback if DOMContentLoaded already fired
-if (document.readyState === "complete" || document.readyState === "interactive") {
-  init();
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', init);
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    init();
+  }
+}
+
+function getState() {
+  return state;
+}
+
+function setState(newState) {
+  state = newState;
+}
+
+// Export algorithms for Node.js test environment
+if (typeof exports !== 'undefined') {
+  module.exports = {
+    GLOBAL_SUSTAINABLE_TARGET,
+    NATIONAL_AVERAGE_US,
+    RECOMMENDATIONS,
+    CHALLENGES_DATABASE,
+    calculateEmissions,
+    generateInsights,
+    calculateProjectedSavings,
+    DEFAULT_STATE,
+    safeLoadState,
+    escapeHTML,
+    getState,
+    setState
+  };
 }

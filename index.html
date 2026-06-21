@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carbonize - Track and Reduce Your Carbon Footprint</title>
   <meta name="description" content="An interactive carbon footprint calculator, daily challenges dashboard, and personalized green insights tool to help you understand and reduce your ecological impact.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';">
+  <meta name="referrer" content="same-origin">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), camera=(), microphone=()">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body data-theme="dark">
@@ -443,7 +446,7 @@
               </div>
             </div>
             
-            <button class="btn-primary" onclick="document.querySelector('[data-tab=\'insights\']').click()" style="margin-top: 1rem;">View Recommendations</button>
+            <button id="go-to-insights-btn" class="btn-primary" style="margin-top: 1rem;">View Recommendations</button>
           </div>
           
         </div>
