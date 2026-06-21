@@ -19,7 +19,7 @@
   <header class="app-header">
     <a href="#" class="logo" aria-label="Carbonize Home">
       <!-- Inline Leaf Icon SVG -->
-      <svg viewBox="0 0 24 24" fill="currentColor">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M17 8C8 10 5.9 16.17 5.18 18c-.14.36-.02.76.28 1 .29.23.68.28 1.02.13 1.83-.79 7.74-3.04 9.52-11.13.19-.88-.56-1.57-1.35-1.35zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/>
       </svg>
       <span class="logo-text">Carbonize</span>
@@ -33,7 +33,7 @@
 
       <!-- Eco Points Badge -->
       <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--primary-light); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem; color: var(--primary);">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
         <span id="eco-points-badge">0</span> pts
       </div>
 
@@ -41,7 +41,7 @@
       <button id="theme-toggle" class="btn-icon" aria-label="Toggle Light/Dark Theme">
         <span id="theme-icon">
           <!-- Moon Icon SVG default -->
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.3 22h-.1c-5.4 0-10-4.6-10-10 0-4.3 2.7-8 6.6-9.4.6-.2 1.3.1 1.5.7.2.6-.1 1.3-.7 1.5-2.8 1-4.7 3.7-4.7 6.8 0 4.1 3.4 7.5 7.5 7.5 3.1 0 5.8-1.9 6.8-4.7.2-.6.9-.9 1.5-.7.6.2.9.9.7 1.5-.9 3.6-4.5 6.1-8.2 6.1z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.3 22h-.1c-5.4 0-10-4.6-10-10 0-4.3 2.7-8 6.6-9.4.6-.2 1.3.1 1.5.7.2.6-.1 1.3-.7 1.5-2.8 1-4.7 3.7-4.7 6.8 0 4.1 3.4 7.5 7.5 7.5 3.1 0 5.8-1.9 6.8-4.7.2-.6.9-.9 1.5-.7.6.2.9.9.7 1.5-.9 3.6-4.5 6.1-8.2 6.1z"/></svg>
         </span>
       </button>
     </div>
@@ -56,37 +56,37 @@
         <ul class="nav-menu" role="tablist">
           <li>
             <a class="nav-link active" data-tab="overview" role="tab" aria-selected="true" aria-controls="overview" tabindex="0">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
               Overview
             </a>
           </li>
           <li>
             <a class="nav-link" data-tab="calculator" role="tab" aria-selected="false" aria-controls="calculator" tabindex="0">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
               Carbon Calculator
             </a>
           </li>
           <li>
             <a class="nav-link" data-tab="composition" role="tab" aria-selected="false" aria-controls="composition" tabindex="0">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2 0v8h8c-.46-4.17-3.83-7.54-8-8zm0 10v10c4.17-.46 7.54-3.83 8-8h-8z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2 0v8h8c-.46-4.17-3.83-7.54-8-8zm0 10v10c4.17-.46 7.54-3.83 8-8h-8z"/></svg>
               Carbon Composition
             </a>
           </li>
           <li>
             <a class="nav-link" data-tab="challenges" role="tab" aria-selected="false" aria-controls="challenges" tabindex="0">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
               Eco Challenges
             </a>
           </li>
           <li>
             <a class="nav-link" data-tab="insights" role="tab" aria-selected="false" aria-controls="insights" tabindex="0">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C8.62 12.02 8 10.59 8 9c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.59-.62 3.02-2.15 4.1z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C8.62 12.02 8 10.59 8 9c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.59-.62 3.02-2.15 4.1z"/></svg>
               Personalized Insights
             </a>
           </li>
           <li>
             <a class="nav-link" data-tab="learning" role="tab" aria-selected="false" aria-controls="learning" tabindex="0">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93z"/></svg>
               Learning Hub
             </a>
           </li>
@@ -248,7 +248,7 @@
             <fieldset style="border: none; padding: 0;">
               <legend class="calc-section-header">
                 <!-- Vehicle Icon -->
-                <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM6 16c-.83 0-1.5-.67-1.5-1.5S5.17 13 6 13s1.5.67 1.5 1.5S6.83 16 6 16zm12 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM6 16c-.83 0-1.5-.67-1.5-1.5S5.17 13 6 13s1.5.67 1.5 1.5S6.83 16 6 16zm12 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
                 <span>Transportation Habit</span>
               </legend>
 
@@ -301,7 +301,7 @@
             <fieldset style="border: none; padding: 0;">
               <legend class="calc-section-header">
                 <!-- Energy Icon -->
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
                 <span>Home Utility & Energy</span>
               </legend>
 
@@ -353,7 +353,7 @@
             <fieldset style="border: none; padding: 0;">
               <legend class="calc-section-header">
                 <!-- Food Icon -->
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
                 <span>Diet & Food Sourcing</span>
               </legend>
 
@@ -383,7 +383,7 @@
             <fieldset style="border: none; padding: 0;">
               <legend class="calc-section-header">
                 <!-- Shopping Icon -->
-                <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zM10 4h4v2h-4V4zm10 15H4V8h16v11z"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zM10 4h4v2h-4V4zm10 15H4V8h16v11z"/></svg>
                 <span>Shopping & Consumption</span>
               </legend>
 
@@ -426,9 +426,9 @@
           <!-- Live Estimator Sticky Box -->
           <div class="card calc-estimator-card">
             <h3>Live Assessment</h3>
-            <div style="margin: 1rem 0; text-align: center;">
-              <span id="estimator-value" style="font-family: var(--font-heading); font-size: 2.25rem; font-weight: 800; color: var(--primary);">0 kg CO2e</span>
-              <p style="font-size: 0.85rem; color: var(--text-muted);">Estimated annual emissions</p>
+            <div class="calc-estimator-header">
+              <span id="estimator-value" class="calc-estimator-val">0 kg CO2e</span>
+              <p class="calc-estimator-sub">Estimated annual emissions</p>
             </div>
             
             <div class="progress-track" aria-hidden="true">
@@ -438,15 +438,29 @@
             <div class="estimator-stats">
               <div class="stat-row">
                 <span>Sustainable Target:</span>
-                <span class="stat-val" style="color: var(--success);">2,000 kg</span>
+                <span class="stat-val text-color-success">2,000 kg</span>
               </div>
               <div class="stat-row">
                 <span>National US Avg:</span>
-                <span class="stat-val" style="color: var(--danger);">16,000 kg</span>
+                <span class="stat-val text-color-danger">16,000 kg</span>
               </div>
             </div>
             
-            <button id="go-to-insights-btn" class="btn-primary" style="margin-top: 1rem;">View Recommendations</button>
+            <button id="go-to-insights-btn" class="btn-primary margin-top-md">View Recommendations</button>
+            <div class="btn-row">
+              <button id="reset-btn" class="btn-action-complete btn-flex-half" aria-label="Reset all calculator inputs">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px;">
+                  <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                </svg>
+                Reset
+              </button>
+              <button id="export-btn" class="btn-action-complete btn-flex-half" aria-label="Export carbon footprint report as text file">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px;">
+                  <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/>
+                </svg>
+                Export
+              </button>
+            </div>
           </div>
           
         </div>
@@ -463,7 +477,7 @@
           </div>
           <!-- Success Graphic Badge -->
           <div style="background-color: var(--bg-secondary); border-radius: 50%; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); border: 2px solid var(--primary-light);">
-            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 44px; height: 44px; color: var(--primary);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 44px; height: 44px; color: var(--primary);" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L11 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H9v-2h2c.55 0 1-.45 1-1V7h2c1.66 0 3-1.34 3-3 .6.42 1.13.95 1.55 1.55-.54.4-1.05.95-1.55 1.55.77 1.02 1.31 2.21 1.55 3.51.52.27 1.01.62 1.45 1.05-.18 2.05-1.03 3.86-2.35 5.25z"/></svg>
           </div>
         </div>
 
@@ -565,7 +579,7 @@
             <p class="article-excerpt">Passenger vehicles are a major driver of global warming. On average, a standard gasoline car emits 400 grams of CO2 for every mile driven. Switching to carpooling or biking just twice a week can slash transit emissions by 20%.</p>
             <a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener noreferrer" class="btn-read-more" aria-label="Read more about EPA Greenhouse Gas Emissions (opens in new tab)">
               Read EPA Guide
-              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;" aria-hidden="true"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
             </a>
           </article>
 
@@ -575,7 +589,7 @@
             <p class="article-excerpt">Dietary emissions vary wildly. Red meat (beef and lamb) production yields up to 30x more carbon than plant-based proteins due to land clearance, logistics, and methane. Going vegetarian or vegan is the single most effective way to lower personal carbon footprint.</p>
             <a href="https://www.wri.org/insights/sustainable-diets-what-you-need-know" target="_blank" rel="noopener noreferrer" class="btn-read-more" aria-label="Read more about sustainable diets at WRI (opens in new tab)">
               Read WRI Insights
-              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;" aria-hidden="true"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
             </a>
           </article>
 
@@ -585,7 +599,7 @@
             <p class="article-excerpt">Where your electricity comes from matters. Utility grids heavily reliant on coal/natural gas have a high emission coefficient. Purchasing utility green power certificates or using LED bulbs (which run 85% cooler and require less watts) mitigates this cost.</p>
             <a href="https://www.energy.gov/energysaver/energy-saver" target="_blank" rel="noopener noreferrer" class="btn-read-more" aria-label="Read more energy saving guides at Energy.gov (opens in new tab)">
               Read Energy Saver Guides
-              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;" aria-hidden="true"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
             </a>
           </article>
 
@@ -600,7 +614,7 @@
             <div class="faq-item">
               <button class="faq-trigger" aria-expanded="false" aria-controls="faq-ans-1">
                 <span>What is a carbon footprint?</span>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
               </button>
               <div id="faq-ans-1" class="faq-content" role="region">
                 <p>A carbon footprint represents the total greenhouse gas (GHG) emissions caused directly and indirectly by an individual, organization, event, or product. It is calculated in carbon dioxide equivalent (CO2e) units to account for different greenhouse gases.</p>
@@ -610,7 +624,7 @@
             <div class="faq-item">
               <button class="faq-trigger" aria-expanded="false" aria-controls="faq-ans-2">
                 <span>How can I reach the 2,000 kg global target?</span>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
               </button>
               <div id="faq-ans-2" class="faq-content" role="region">
                 <p>Reaching the target requires a combination of behavioral changes (plant-based diets, minimizing flights, walking/cycling) and structural enhancements (installing rooftop solar, transitioning to electric vehicles, and upgrading home insulation).</p>
@@ -620,7 +634,7 @@
             <div class="faq-item">
               <button class="faq-trigger" aria-expanded="false" aria-controls="faq-ans-3">
                 <span>Why are electric vehicles and clean grid connected?</span>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
               </button>
               <div id="faq-ans-3" class="faq-content" role="region">
                 <p>Electric vehicles run on electricity, not gasoline. Therefore, an EV's carbon footprint is tied to the energy grid where it is charged. As solar, wind, and nuclear energy shares expand on the grid, EV charging emissions decrease close to absolute zero.</p>
@@ -644,7 +658,7 @@
   <dialog id="audit-modal" class="card" style="border: 2px solid var(--primary); max-width: 600px; width: 90%; margin: auto; padding: 2rem; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); color: var(--text-primary); background-color: var(--bg-secondary);">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--bg-tertiary); padding-bottom: 0.75rem;">
       <h3 style="display: flex; align-items: center; gap: 0.5rem; color: var(--primary); margin: 0;">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px;" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
         Parameter Diagnostic Console
       </h3>
       <button id="close-audit-btn" class="btn-icon" aria-label="Close dialog" style="width: 32px; height: 32px; font-size: 1.5rem; line-height: 1;">&times;</button>

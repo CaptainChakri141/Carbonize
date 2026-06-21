@@ -6,6 +6,8 @@
  * ==========================================================================
  */
 
+(function() {
+
 // Target threshold constants: 2,000 kg CO2e is the global sustainable limit per person/year.
 const GLOBAL_SUSTAINABLE_TARGET = 2000;
 const NATIONAL_AVERAGE_US = 16000;
@@ -1468,6 +1470,93 @@ function init() {
     });
   }
 
+  const resetBtn = document.getElementById('reset-btn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (confirm("Are you sure you want to reset all calculator inputs and clear saved data?")) {
+        state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        try {
+          localStorage.setItem('carbonize_state', JSON.stringify(state));
+        } catch (e) {}
+        
+        // Sync slider inputs back to defaults in DOM
+        const calc = state.calculator;
+        if (DOM.carMileage) DOM.carMileage.value = calc.carMileage;
+        if (DOM.carFuel) DOM.carFuel.value = calc.carFuel;
+        if (DOM.publicTransit) DOM.publicTransit.value = calc.publicTransit;
+        if (DOM.flights) DOM.flights.value = calc.flights;
+        if (DOM.electricBill) DOM.electricBill.value = calc.electricBill;
+        if (DOM.renewableShare) DOM.renewableShare.value = calc.renewableShare;
+        if (DOM.heatingBill) DOM.heatingBill.value = calc.heatingBill;
+        if (DOM.heatingFuel) DOM.heatingFuel.value = calc.heatingFuel;
+        if (DOM.dietType) DOM.dietType.value = calc.dietType;
+        if (DOM.localFood) DOM.localFood.value = calc.localFood;
+        if (DOM.clothingItems) DOM.clothingItems.value = calc.clothingItems;
+        if (DOM.techItems) DOM.techItems.value = calc.techItems;
+        if (DOM.recycleShare) DOM.recycleShare.value = calc.recycleShare;
+
+        updateUI();
+        renderChallenges();
+      }
+    });
+  }
+
+  const exportBtn = document.getElementById('export-btn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      const emissions = calculateEmissions();
+      const insights = generateInsights(emissions);
+      const results = calculateProjectedSavings(emissions, state.completedRecs);
+      
+      const reportContent = `==================================================
+CARBONIZE ECOLOGICAL FOOTPRINT ASSESSMENT REPORT
+Generated on: ${new Date().toLocaleString()}
+==================================================
+
+1. EMISSIONS PROFILE (kg CO2e / Year)
+--------------------------------------------------
+- Transportation:      ${emissions.transport.toLocaleString()} kg
+- Home Utility Energy: ${emissions.energy.toLocaleString()} kg
+- Diet & Food Sourcing: ${emissions.food.toLocaleString()} kg
+- Shopping Consumption: ${emissions.shopping.toLocaleString()} kg
+--------------------------------------------------
+TOTAL FOOTPRINT:        ${results.currentTotal.toLocaleString()} kg CO2e / Year
+CARBON RATING:          ${insights.rating.toUpperCase()}
+
+2. IMPACT BENCHMARKS
+--------------------------------------------------
+- vs. Global Sustainable Limit Target (2,000 kg): ${insights.comparisonSustainable}%
+- vs. US National Average (16,000 kg):             ${insights.comparisonUS}%
+
+3. ECO ACTION PLAN SAVINGS
+--------------------------------------------------
+- Selected Actions:    ${state.completedRecs.length}
+- Target CO2 Savings:  ${results.co2Savings.toLocaleString()} kg CO2e / Year
+- Projected Footprint: ${results.projectedTotal.toLocaleString()} kg CO2e / Year
+- Estimated Cash Kept: $${results.cashSavings.toLocaleString()} USD / Year
+
+4. COMPLETED CHALLENGES STREAK
+--------------------------------------------------
+- Eco Points Earned:   ${state.ecoPoints} pts
+- Completed Tasks:     ${Object.keys(state.challenges).filter(k => state.challenges[k]).join(', ') || 'None'}
+
+==================================================
+Thank you for tracking and reducing your ecological footprint.
+Data processed locally with Carbonize.
+==================================================`;
+
+      const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `carbonize_ecological_report_${new Date().toISOString().split('T')[0]}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+  }
+
   DOM.faqItems.forEach(item => {
     const trigger = item.querySelector('.faq-trigger');
     if (trigger) {
@@ -1552,3 +1641,5 @@ if (typeof exports !== 'undefined') {
     setState
   };
 }
+
+})();

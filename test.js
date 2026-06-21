@@ -174,3 +174,91 @@ test('Savings logic: action plan calculations', () => {
   assert.strictEqual(results.cashSavings, 450 + 75);
   assert.strictEqual(results.projectedTotal, 11000 - 950);
 });
+
+test('Calculation details: vehicle fuel type multipliers', () => {
+  const calcState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  calcState.calculator = {
+    ...DEFAULT_STATE.calculator,
+    carMileage: 10000,
+    publicTransit: 0,
+    flights: 0
+  };
+
+  // Test gasoline (Petrol) multiplier = 0.411
+  calcState.calculator.carFuel = 'gas';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().transport, 4110);
+
+  // Test diesel multiplier = 0.450
+  calcState.calculator.carFuel = 'diesel';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().transport, 4500);
+
+  // Test hybrid multiplier = 0.200
+  calcState.calculator.carFuel = 'hybrid';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().transport, 2000);
+
+  // Test electric vehicle multiplier = 0.100
+  calcState.calculator.carFuel = 'electric';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().transport, 1000);
+});
+
+test('Calculation details: heating source factors', () => {
+  const calcState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  calcState.calculator = {
+    ...DEFAULT_STATE.calculator,
+    electricBill: 0, // isolate heating
+    renewableShare: 0,
+    heatingBill: 100
+  };
+
+  // Gas heating factor = 1.2 (100 * 12 * 1.2 = 1440)
+  calcState.calculator.heatingFuel = 'gas';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().energy, 1440);
+
+  // Electric heating factor = 0.85 (100 * 12 * 0.85 = 1020)
+  calcState.calculator.heatingFuel = 'electric';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().energy, 1020);
+
+  // Boiler Oil factor = 1.8 (100 * 12 * 1.8 = 2160)
+  calcState.calculator.heatingFuel = 'oil';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().energy, 2160);
+
+  // None factor = 0 (100 * 12 * 0 = 0)
+  calcState.calculator.heatingFuel = 'none';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().energy, 0);
+});
+
+test('Calculation details: dietary footprint levels', () => {
+  const calcState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  calcState.calculator = {
+    ...DEFAULT_STATE.calculator,
+    localFood: 0 // local food share = 0
+  };
+
+  // Vegan = 1000
+  calcState.calculator.dietType = 'vegan';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().food, 1000);
+
+  // Vegetarian = 1400
+  calcState.calculator.dietType = 'vegetarian';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().food, 1400);
+
+  // Moderate = 1900
+  calcState.calculator.dietType = 'moderate';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().food, 1900);
+
+  // Heavy Meat = 3000
+  calcState.calculator.dietType = 'heavy-meat';
+  setState(calcState);
+  assert.strictEqual(calculateEmissions().food, 3000);
+});
